@@ -1,5 +1,6 @@
 const express = require("express");
-const axios = require("axios");
+const https = require("https");
+const path = require("path");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -7,35 +8,40 @@ const PORT = process.env.PORT || 3000;
 // Middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(express.static("public")); // So index.html works
+app.use(express.static("public")); // Serves index.html from /public
 
-// POST route: /submit
-app.post("/submit", async (req, res) => {
+// 🔹 Route: Handle form submission
+app.post("/submit", (req, res) => {
   const userId = req.body.userId;
+  const apiUrl = `https://pist-webapp-c6eggbakhsh9ftgk.azurewebsites.net/mock-api/user?id=${userId}`;
 
-  try {
-    // Replace this URL with your real API
-    const response = await axios.get(`https://external.api.com/user?id=${userId}`);
+  https.get(apiUrl, (apiRes) => {
+    let data = "";
 
-    const userData = response.data;
-    console.log("Received user data:", userData);
-
-    res.json({
-      message: "Data received successfully.",
-      data: userData
+    apiRes.on("data", (chunk) => {
+      data += chunk;
     });
 
-  } catch (error) {
-    console.error("API error:", error.message);
-    res.status(500).json({ error: "Failed to retrieve user data" });
-  }
+    apiRes.on("end", () => {
+      try {
+        const parsed = JSON.parse(data);
+        console.log("Received from mock API:", parsed);
+        res.json({ message: "Data received successfully", data: parsed });
+      } catch (err) {
+        console.error("Failed to parse response:", err);
+        res.status(500).json({ error: "Failed to parse API response" });
+      }
+    });
+  }).on("error", (err) => {
+    console.error("API request failed:", err.message);
+    res.status(500).json({ error: "API request failed" });
+  });
 });
 
-// Simulated external API endpoint
+// 🔹 Simulated external API endpoint
 app.get("/mock-api/user", (req, res) => {
   const userId = req.query.id;
 
-  // Return mock data for any userId
   const data = {
     userId: userId,
     name: "Jane Doe",
@@ -46,10 +52,7 @@ app.get("/mock-api/user", (req, res) => {
   res.json(data);
 });
 
-
-
-// Start server
+// 🔹 Start server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
-
