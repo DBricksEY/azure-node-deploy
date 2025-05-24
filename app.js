@@ -2,6 +2,7 @@ const express = require("express");
 const https = require("https");
 const path = require("path");
 
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -16,10 +17,7 @@ app.post("/submit", (req, res) => {
   const apiUrl = `http://localhost:${PORT}/mock-api/user?id=${userId}`;
 
   https.get(apiUrl, (apiRes) => {
-    let data = "";
-
-    apiRes.on("data", (chunk) => {
-      data += chunk;
+    ...
     });
 
     apiRes.on("end", () => {
