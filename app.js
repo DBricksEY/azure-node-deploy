@@ -14,7 +14,7 @@ app.use(express.static("public")); // Serves index.html from /public
 // 🔹 Route: Handle form submission
 app.post("/submit", (req, res) => {
   const userId = req.body.userId;
-  const apiUrl = `http://localhost:${PORT}/mock-api/user?id=${userId}`;
+  const apiUrl = `https://localhost:${PORT}/mock-api/user?id=${userId}`;
 
   https.get(apiUrl, (apiRes) => {
     ...
