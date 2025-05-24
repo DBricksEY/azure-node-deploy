@@ -1,18 +1,38 @@
 const express = require("express");
-const bodyParser = require("body-parser");
-const path = require("path");
+const axios = require("axios");
 
 const app = express();
-const port = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000;
 
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(express.static("public"));
+// Middleware
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(express.static("public")); // So index.html works
 
-app.post("/submit", (req, res) => {
-    const userId = req.body.userId;
-    res.send(`<h2>Thanks! ID ${userId} received.</h2>`);
+// POST route: /submit
+app.post("/submit", async (req, res) => {
+  const userId = req.body.userId;
+
+  try {
+    // Replace this URL with your real API
+    const response = await axios.get(`https://external.api.com/user?id=${userId}`);
+
+    const userData = response.data;
+    console.log("Received user data:", userData);
+
+    res.json({
+      message: "Data received successfully.",
+      data: userData
+    });
+
+  } catch (error) {
+    console.error("API error:", error.message);
+    res.status(500).json({ error: "Failed to retrieve user data" });
+  }
 });
 
-app.listen(port, () => {
-    console.log(`Server running on port ${port}`);
+// Start server
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
+
