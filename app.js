@@ -31,6 +31,23 @@ app.post("/submit", async (req, res) => {
   }
 });
 
+// Simulated external API endpoint
+app.get("/mock-api/user", (req, res) => {
+  const userId = req.query.id;
+
+  // Return mock data for any userId
+  const data = {
+    userId: userId,
+    name: "Jane Doe",
+    age: 30,
+    status: "verified"
+  };
+
+  res.json(data);
+});
+
+
+
 // Start server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
