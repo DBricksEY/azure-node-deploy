@@ -1,6 +1,7 @@
 const express = require("express");
 const axios = require("axios");
 const path = require("path");
+require("dotenv").config(); // Load environment variables from .env
 
 const app = express();
 const PORT = process.env.PORT || 3000;
