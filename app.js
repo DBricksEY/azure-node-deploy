@@ -9,13 +9,15 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static("public"));
 
-// 🔹 Replace with call to Azure Function endpoint
+// 🔹 POST /submit: Enqueue ID via Azure Function
 app.post("/submit", async (req, res) => {
   const userId = req.body.userId;
+  const functionKey = process.env.AZURE_FUNCTION_KEY;
+  const functionUrl = `https://id-processor-func.azurewebsites.net/api/EnqueueID?code=${functionKey}`;
 
   try {
     const response = await axios.post(
-       "https://id-processor-func.azurewebsites.net/api/EnqueueID",
+      functionUrl,
       { userId: userId },
       {
         headers: {
