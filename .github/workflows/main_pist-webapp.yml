@@ -27,7 +27,7 @@ jobs:
         run: npm install
 
       - name: Zip artifact for deployment
-        run: zip -r release.zip app.js package.json package-lock.json public/
+        run: zip -r release.zip app.js package.json package-lock.json public/ node_modules/
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
