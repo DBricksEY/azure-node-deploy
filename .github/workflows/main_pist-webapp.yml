@@ -23,6 +23,9 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Inject Azure Function Key to .env
+        run: echo "AZURE_FUNCTION_KEY=${{ secrets.AZURE_FUNCTION_KEY }}" > .env
+
       - name: Zip entire project for deployment
         run: zip -r release.zip . -x "*.git*" "*.github*" "release.zip"
 
